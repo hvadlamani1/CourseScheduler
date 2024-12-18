@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="register-container">
+    <h1>Register as Student</h1>
+    <form action="{{ url_for('auth.register_student') }}" method="POST">
+        {{ form.hidden_tag() }}
+        <!-- Username -->
+        <label for="username">{{ form.username.label }}</label>
+        {{ form.username }}
+        {% for error in form.username.errors %}
+        <div class="error">[{{ error }}]</div>
+        {% endfor %}
+
+        <!-- WPI ID -->
+        <label for="wpi_id">{{ form.wpi_id.label }}</label>
+        {{ form.wpi_id }}
+        {% for error in form.wpi_id.errors %}
+        <div class="error">[{{ error }}]</div>
+        {% endfor %}
+
+        <!-- First Name -->
+        <label for="firstname">{{ form.firstname.label }}</label>
+        {{ form.firstname }}
+        {% for error in form.firstname.errors %}
+        <div class="error">[{{ error }}]</div>
+        {% endfor %}
+
+        <!-- Last Name -->
+        <label for="lastname">{{ form.lastname.label }}</label>
+        {{ form.lastname }}
+        {% for error in form.lastname.errors %}
+        <div class="error">[{{ error }}]</div>
+        {% endfor %}
+
+        <!-- Phone Number -->
+        <label for="phoneNum">{{ form.phoneNum.label }}</label>
+        {{ form.phoneNum }}
+        {% for error in form.phoneNum.errors %}
+        <div class="error">[{{ error }}]</div>
+        {% endfor %}
+
+        <!-- Major -->
+        <label for="Major">{{ form.Major.label }}</label>
+        {{ form.Major }}
+        {% for error in form.Major.errors %}
+        <div class="error">[{{ error }}]</div>
+        {% endfor %}
+
+        <!-- Second Major -->
+        <label for="Major2">{{ form.Major2.label }}</label>
+        {{ form.Major2 }}
+        {% for error in form.Major2.errors %}
+        <div class="error">[{{ error }}]</div>
+        {% endfor %}
+
+        <!-- GPA -->
+        <label for="GPA">{{ form.GPA.label }}</label>
+        {{ form.GPA }}
+        {% for error in form.GPA.errors %}
+        <div class="error">[{{ error }}]</div>
+        {% endfor %}
+
+        <!-- Graduation Date -->
+        <label for="gradDate">{{ form.gradDate.label }}</label>
+        {{ form.gradDate }}
+        {% for error in form.gradDate.errors %}
+        <div class="error">[{{ error }}]</div>
+        {% endfor %}
+
+        <!-- Courses Taken -->
+        <div class="center-align">
+            <a class="btn modal-trigger waves-effect waves-light" href="#courses-modal">
+                Add/Edit Courses
+                <i class="material-icons right">edit</i>
+            </a>
+        </div>
+
+        
+
+        <!-- Password -->
+        <label for="password">{{ form.password.label }}</label>
+        {{ form.password }}
+        {% for error in form.password.errors %}
+        <div class="error">[{{ error }}]</div>
+        {% endfor %}
+
+        <!-- Confirm Password -->
+        <label for="password2">{{ form.password2.label }}</label>
+        {{ form.password2 }}
+        {% for error in form.password2.errors %}
+        <div class="error">[{{ error }}]</div>
+        {% endfor %}
+
+        {% for error in form.coursesTaken.errors %}
+        <div class="error">[{{ error }}]</div>
+        {% endfor %}
+        
+        <!-- Submit Button -->
+        {{ form.submit(class="button login-button") }}
+</div>
+
+<!-- Modal Structure for Courses -->
+<div id="courses-modal" class="modal" style="max-height: 500px; overflow-y: auto;">
+    <div class="modal-content">
+        <h4 class="center-align">Courses Taken</h4>
+
+                <!-- Search Bar -->
+                <div class="input-field">
+                    <input id="course-search" type="text" class="validate" placeholder="Search courses...">
+                    <label for="course-search">Search Courses</label>
+                </div>
+        <div id="courses-list">
+            {% for course in form.coursesTaken %}
+            <div class="card-panel grey lighten-4 course-item">
+                <div class="row">
+                    <!-- Course Name -->
+                    <div class="col s12 m4">
+                        <label>
+                            {{ course }}
+                            <span>{{ course.label }}</span>
+                        </label>
+                    </div>
+
+                    <!-- SA'd this course? Checkbox -->
+                    <div class="col s12 m4">
+                        <label>
+                            <input type="checkbox" name="sa_status_{{ loop.index }}" id="sa_status_{{ loop.index }}">
+                            <span>SA'd this course?</span>
+                        </label>
+                    </div>
+
+                    <!-- Grade Received Dropdown -->
+                    <div class="col s12 m4">
+                        <label for="grade_{{ loop.index }}">Grade Received</label>
+                        <select name="grade_{{ loop.index }}" id="grade_{{ loop.index }}" class="browser-default">
+                            <option value="N/A" selected>N/A</option>
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                            <option value="D">D</option>
+                        </select>
+                    </div>
+                    <div class="col s12 m4">
+                        <label>
+                            <input type="text" name="term_{{ loop.index }}" id="term_{{ loop.index }}">
+                            <span>Term</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="modal-footer">
+        <a href="#" class="modal-close waves-effect waves-green btn-flat">Done</a>
+    </div>
+</div>
+</form>
+{% endblock %}

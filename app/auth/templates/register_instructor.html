@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="register-container">
+    <h1>Register Instructor</h1>
+    <form action="{{ url_for('auth.register_instructor') }}" method="POST">
+        {{ form.hidden_tag() }}
+
+        <!-- Username -->
+        <label for="username">{{ form.username.label }}</label>
+        {{ form.username }}
+        {% for error in form.username.errors %}
+        <div class="error">[{{ error }}]</div>
+        {% endfor %}
+
+        <!-- Password -->
+        <label for="password">{{ form.password.label }}</label>
+        {{ form.password }}
+        {% for error in form.password.errors %}
+        <div class="error">[{{ error }}]</div>
+        {% endfor %}
+
+        <!-- Confirm Password -->
+        <label for="password2">{{ form.password2.label }}</label>
+        {{ form.password2 }}
+        {% for error in form.password2.errors %}
+        <div class="error">[{{ error }}]</div>
+        {% endfor %}
+
+        <!-- First Name -->
+        <label for="firstname">{{ form.firstname.label }}</label>
+        {{ form.firstname }}
+        {% for error in form.firstname.errors %}
+        <div class="error">[{{ error }}]</div>
+        {% endfor %}
+
+        <!-- Last Name -->
+        <label for="lastname">{{ form.lastname.label }}</label>
+        {{ form.lastname }}
+        {% for error in form.lastname.errors %}
+        <div class="error">[{{ error }}]</div>
+        {% endfor %}
+
+        <!-- Phone Number -->
+        <label for="phonenum">{{ form.phonenum.label }}</label>
+        {{ form.phonenum }}
+        {% for error in form.phonenum.errors %}
+        <div class="error">[{{ error }}]</div>
+        {% endfor %}
+
+        <!-- WPI ID -->
+        <label for="wpiID">{{ form.wpiID.label }}</label>
+        {{ form.wpiID }}
+        {% for error in form.wpiID.errors %}
+        <div class="error">[{{ error }}]</div>
+        {% endfor %}
+
+        <!-- Submit Button -->
+        {{ form.submit(class="button login-button") }}
+    </form>
+</div>
+{% endblock %}

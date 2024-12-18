@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% if title %}
+        <title>{{ title }} - SA Portal</title>
+    {% else %}
+        <title>SA Portal</title>
+    {% endif %}
+    <!-- Materialize CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    {{moment.include_moment()}}
+</head>
+<body>
+    <div class="nav-container">
+        <!-- Conditional Logo Link -->
+        <div class="logo">
+            {% if current_user.is_authenticated %}
+                {% if current_user.userType == 'Student' %}
+                    <a href="{{ url_for('stud.studentDash') }}">
+                        <img src="{{ url_for('static', filename='sa-removebg-preview.png') }}" alt="Student Dashboard" class="logo-img">
+                    </a>
+                {% elif current_user.userType == 'Instructor' %}
+                    <a href="{{ url_for('inst.instructorDash') }}">
+                        <img src="{{ url_for('static', filename='sa-removebg-preview.png') }}" alt="Instructor Dashboard" class="logo-img">
+                    </a>
+                {% endif %}
+            {% else %}
+            <a href="{{ url_for('auth.login') }}">
+                <img src="{{ url_for('static', filename='sa-removebg-preview.png') }}" alt="SA Portal Logo" class="logo-img">
+            </a>
+            {% endif %}
+        </div>
+        <div class="nav-links">
+            {% if current_user.is_authenticated %}
+                {% if current_user.userType == 'Student' %}
+                    <a href="{{url_for('stud.student_profile', student_id = current_user.wpiID)}}">Profile</a>
+                {% elif current_user.userType == 'Instructor' %}
+                    <a href="{{ url_for('inst.instructor_profile', instructor_id = current_user.wpiID) }}">Profile</a>
+                    <a href="{{ url_for('inst.create_course_section') }}">Create Course Section</a>
+                    <a href="{{ url_for('inst.create_sa_position') }}">Create SA Position</a>
+                    <a href="">Manage Applications</a>
+                {% endif %}
+                <a href="{{ url_for('auth.logout') }}">Logout</a>
+            {% else %}
+                <a href="{{ url_for('auth.login') }}">Login</a>
+                <a href="{{ url_for('auth.register_student') }}">Register as Student</a>
+                <a href="{{ url_for('auth.register_instructor') }}">Register as Instructor</a>
+            {% endif %}
+        </div>
+    </div>
+    <div class="content">
+        <body>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="flash-messages">
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+            {% block content %}
+            {% endblock %}
+        </body>
+    </div>
+<footer>
+    <p>&copy; 2024 SA Portal. All Rights Reserved.</p>
+    <p><a href="{{ url_for('auth.about_us') }}">About Us</a></p>
+</footer>
+</body>
+</html>
+
+<!-- Materialize JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Initialize Dropdown
+        var dropdowns = document.querySelectorAll('.dropdown-trigger');
+        M.Dropdown.init(dropdowns);
+
+        // Initialize Modal with Editable Inputs
+        var modals = document.querySelectorAll('.modal');
+        M.Modal.init(modals, { preventScrolling: false });
+
+        // Initialize Form Select
+        var selects = document.querySelectorAll('select');
+        M.FormSelect.init(selects);
+
+        // Flash messages auto-hide
+        const flashMessages = document.querySelector('.flash-messages');
+        if (flashMessages) {
+            setTimeout(() => {
+                flashMessages.style.display = 'none';
+            }, 4000);
+        }
+
+        // Search Courses in Modal
+        const searchInput = document.getElementById('course-search');
+        if (searchInput) {
+            const courseItems = document.querySelectorAll('.course-item');
+            searchInput.addEventListener('keyup', function () {
+                const filter = searchInput.value.toLowerCase();
+                courseItems.forEach((item) => {
+                    const text = item.textContent.toLowerCase();
+                    item.style.display = text.includes(filter) ? 'block' : 'none';
+                });
+            });
+        }
+    });
+    // Ensures Flashes Disappear to Prevent Blocking NavBar
+    window.addEventListener('DOMContentLoaded', () => {
+        const flashMessages = document.querySelector('.flash-messages');
+        if (flashMessages) {
+            setTimeout(() => {
+                flashMessages.style.display = 'none';
+            }, 4000);
+        }
+    });
+</script>

@@ -1,0 +1,210 @@
+
+    <div class="grid-containerCourse">
+        <div class = "course-section">
+        <h1>Course Section: <span class="course-info">{{ course.courseSection }}</span></h1>
+        <p>Course Title: <span class="course-info">{{ course.course.courseTitle}}</span></p>    
+        <p>Instructor Username: <span class="course-info">{{ course.instructor.username }}</span></p>   
+        <p>Term: <span class="course-info">{{ course.term }}</span></p>
+        </div>
+        <div class = "course-sa-section">
+       {%if course.get_positions() %}
+            <h1>Available SA Positions</h1>
+        Minimum GPA: {{course.get_positions()[0].minGPA}}<br>
+        Minimum Grade Required For The Course: {{course.get_positions()[0].minGradeInCourse}}<br>
+        Student Need To Be SA Before: {% if course.get_positions()[0].previousSAExperience == True%} Yes
+        {%else%} No {%endif%}<br>
+        Student Need To Be SA In This Course Before:{% if course.get_positions()[0].previousSAExperienceInCourse == True%} Yes
+        {%else%} No {%endif%}<br>
+        Number of SA's For This Position: {{course.get_positions()[0].numSA}}<br>
+        Date Posted: {{moment(course.get_positions()[0].date).format('LL')}}<br>
+    {%endif%}
+
+        </div>
+        </div>
+        <div class = "item3">
+            {% if course.get_positions() %}
+            <button onclick = "get_roster({{course.courseSectionID}})" class = "button" style=>View applications</button>
+            {% else %}
+            <b>No Available SA Positions For This Course: {{course.course.courseTitle}}, Section: {{course.courseSection}} </b>
+            {% endif %}
+        </div>
+
+    <br>
+        
+
+     <!-- STILL NEEDS TO BE DISCUSSED AND FIXED JUST A BASIC IMPLEMNETAION I DIDd. -->
+
+       <!-- Link to toggle SA positions -->
+     <!--<a href="{{ url_for('inst.instructorDash', display_sa_id=course.courseSectionID) }}" class="btn btn-info">Show SA Positions</a>-->
+    
+     <!-- SA positions will only be displayed if the display_sa_id matches this course's ID -->
+     <!--{% if display_sa_id == course.courseSectionID %}
+        <div class="sa-positions">
+            {% if course.get_positions() %}
+
+                <ul>
+                    {% set ns = namespace(iterator=1) %}
+                    {% for position in course.get_positions() %}
+                        
+                         <b>Position Type: {{ns.iterator}}</b> <br>
+                         GPA Requirement: {{ position.minGPA }}<br>
+                            Recommended Grade Achieved in Class: {{ position.minGradeInCourse }}<br>
+                            Recommended previous experience: {{ position.previousExperience }}<br>
+                            Number of Positions: {{ position.numSA}}  <br><br>
+                    {% set ns.iterator = ns.iterator + 1 %}
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No SA positions available.</p>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
+-->
+
+<div id="roster-div-{{course.courseSectionID}}" hidden="true">
+    <table id="rtable">
+        <thread>
+            <tr valign="bottom">
+                <th width = "15%"> Name </th>
+                <th width="20%"> WPI Email </th>
+                <th width="20%"> WPI ID </th>
+                <th width="15%"> Major </th>
+                <th width="20%">Status</th>
+                <th width="5%">Action</th>
+                <th width="5%">Reject</th>
+            </tr>
+        </thread>
+    </table>
+    
+    <div class="left-allign-div">
+        <button onclick="reset_roster({{course.courseSectionID}})" class="button" style="width: 10%;">Close</button>
+    </div>
+</div>
+
+{%block script%}
+<script>
+    async function get_roster(course_id){
+        const url = "{{url_for('inst.roster_data',course_section_id = 'course_id')}}".replace("course_id",course_id);
+        try{
+            const response = await fetch(url);
+            if(!response.ok){
+                throw new Error('Response status: ${response.status}');
+            }
+            const json = await response.json();
+            console.log(json);
+            build_roster(course_id,json);
+        } catch(error){
+            console.error(error.message)
+        }
+    }
+
+    function build_roster(course_id,data){
+        reset_roster(course_id);
+        let parent_div = document.getElementById(`roster-div-${course_id}`);
+        let rtable = parent_div.querySelector("#rtable");
+        for (let i = 0; i < data.length; i++) {
+            let tr_elem = document.createElement("tr");
+            tr_elem.vAlign = "middle";
+
+            // Create a button for the student's profile
+            let td_name = document.createElement("td");
+            td_name.width = "15%";
+            let profile_button = document.createElement("button");
+            profile_button.className = "profile-button"; 
+            profile_button.textContent = `${data[i]['student_firstname']} ${data[i]['student_lastname']}`;
+
+            profile_button.onclick = () => {
+                const url = "{{url_for('stud.student_profile', student_id='student_ID')}}".replace(
+                    "student_ID",
+                    `${data[i]["student_wpiID"]}`
+                );
+                window.location = url;
+            };
+            td_name.appendChild(profile_button);
+            tr_elem.appendChild(td_name);
+
+            let td_email = document.createElement("td");
+            td_email.width = "20%";
+            td_email.textContent = `${data[i]["student_username"]}`;
+            tr_elem.appendChild(td_email);
+
+            let td_address = document.createElement("td");
+            td_address.width = "20%";
+            td_address.textContent = `${data[i]["student_wpiID"]}`;
+            tr_elem.appendChild(td_address);
+
+            let td_major = document.createElement("td");
+            td_major.width = "20%";
+            td_major.textContent = `${data[i]["student_major"]}`;
+            tr_elem.appendChild(td_major);
+
+            let td_status = document.createElement("td");
+            td_status.width = "20%";
+            td_status.textContent = `${data[i]["student_status"]}`;
+            tr_elem.appendChild(td_status);
+
+            if(`${data[i]["student_status"]}` == 'pending'){
+                let td_assign = document.createElement("button");
+                td_assign.className="assignbutton";
+                td_assign.width = "5%";
+                td_assign.textContent = 'Assign';
+                td_assign.onclick = () => {
+                    const url = "{{url_for('inst.assign_sa', student_id = 'student_ID', course_id = 'course_ID')}}".replace(
+                        "student_ID", `${data[i]["student_wpiID"]}`
+                    ).replace(
+                        "course_ID", course_id
+                    )
+                    window.location = url;
+                }
+                tr_elem.appendChild(td_assign);
+            } else {
+                let td_unavailable = document.createElement("td");
+                td_unavailable.width = "5%";
+                td_unavailable.textContent = 'Unavailable';
+                tr_elem.appendChild(td_unavailable);
+            }
+
+            if(`${data[i]["student_status"]}` == 'pending'){
+                let td_reject = document.createElement("button");
+                td_reject.className="assignbutton";
+                td_reject.width = "5%";
+                td_reject.textContent = 'Reject';
+                td_reject.onclick = () => {
+                    const url = "{{url_for('inst.reject_application', student_id = 'student_ID', course_id = 'course_ID')}}".replace(
+                        "student_ID", `${data[i]["student_wpiID"]}`
+                    ).replace(
+                        "course_ID", course_id
+                    )
+                    window.location = url;
+                }
+                tr_elem.appendChild(td_reject);
+            } else {
+                let td_unavailable = document.createElement("td");
+                td_unavailable.width = "5%";
+                td_unavailable.textContent = 'Unavailable';
+                tr_elem.appendChild(td_unavailable);
+            }
+
+            rtable.appendChild(tr_elem);
+        }
+        parent_div.hidden = false; 
+    }
+
+    function reset_roster(course_id){
+    let parent_div = document.getElementById(`roster-div-${course_id}`);
+    let rtable = parent_div.querySelector("#rtable");
+    var tableHeaderRowCount = 1;
+    var rowCount = rtable.rows.length;
+    for(var i = tableHeaderRowCount; i < rowCount; i++){
+        rtable.deleteRow(tableHeaderRowCount)
+    }
+    parent_div.hidden = true
+        }
+
+    function utc_to_local(utcdate){
+        var d = new Date(utcdate);
+        return d.toLocaleString();
+    }
+</script>
+{%endblock%}

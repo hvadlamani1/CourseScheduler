@@ -1,0 +1,62 @@
+{%extends "base.html" %}
+{%block content%}
+
+<div class="register-container">
+<h1>Edit Instructor Profile</h1>
+
+<form action="" method="POST">
+    {{form.hidden_tag()}}
+
+    <p>
+        {{form.firstname.label}}<br>
+        {{form.firstname(class='input') }}<br>
+        {% for error in form.firstname.errors%}
+        <span style = "color:red">[{{error}}]</span>
+        {% endfor %}
+    </p>
+
+    <p>
+        {{form.lastname.label}}<br>
+        {{form.lastname(class='input') }}<br>
+        {% for error in form.lastname.errors%}
+        <span style = "color:red">[{{error}}]</span>
+        {% endfor %}
+    </p>
+
+    <p>
+        {{form.wpiEmail.label}}<br>
+        {{form.wpiEmail(class='input') }}<br>
+        {% for error in form.wpiEmail.errors%}
+        <span style = "color:red">[{{error}}]</span>
+        {% endfor %}
+    </p>
+
+    <p>
+        {{form.phoneNum.label}}<br>
+        {{form.phoneNum(class='input') }}<br>
+        {% for error in form.phoneNum.errors%}
+        <span style = "color:red">[{{error}}]</span>
+        {% endfor %}
+    </p>
+
+    <p>
+        {{form.password.label}}<br>
+        {{form.password(class='input') }}<br>
+        {% for error in form.password.errors%}
+        <span style = "color:red">[{{error}}]</span>
+        {% endfor %}
+    </p>
+
+    <p>
+        {{form.password2.label}}<br>
+        {{form.password2(class='input') }}<br>
+        {% for error in form.password2.errors%}
+        <span style = "color:red">[{{error}}]</span>
+        {% endfor %}
+    </p>
+
+    <p>{{form.submit(class='button')}}</p>
+</form>
+
+{%endblock%}
+</div>

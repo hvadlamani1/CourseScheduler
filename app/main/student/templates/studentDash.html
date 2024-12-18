@@ -1,0 +1,222 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="dashboard-header">
+        <h1>Welcome to Student Dashboard</h1>
+    </div>
+
+<div class = "tab">
+    <button class="tablinks" onclick="openTab(event, 'Recommended')">Recommended Positions</button>
+    <button class="tablinks" onclick="openTab(event, 'All')">All Positions</button>
+    <button class="tablinks" onclick="openTab(event, 'Apps')">Your Applications</button>
+</div>
+
+    <div id="Recommended" class="tabcontent">
+        <section class="positions-section">
+
+        {% if current_user.check_assignedToPosition() %}
+            <p style="color: rgb(33, 103, 12); font-size: 20px; text-align: center; font-weight: bold;">You have been Assigned to an SA Position!</p>
+            {% set position = current_user.get_assignedPosition().position %}
+            <div class="position-card">
+                <div class="position-main">
+                    <!-- Course Title and Section -->
+                    <div class="item1Course">
+                        <h1>
+                            <span class="course-info">
+                                {{ position.courseSection.course.courseTitle }}
+                            </span>
+                        </h1>
+                        <p>Course Section: <span class="course-info">{{ position.courseSection.courseSection }}</span></p>
+                        <p>Term: <span class="course-info">{{ position.courseSection.term }}</span></p>
+                        <p>Instructor Username: <span class="course-info">{{ position.courseSection.instructor.username }}</span></p>
+                    </div>
+        {% else %}
+            <h2>Recommended SA Positions</h2>
+            {% if recommended_positions %}
+                    <div class="position-list">
+                    {% for position in recommended_positions %}
+                    <div class="position-card">
+                        <div class="position-main">
+                            <!-- Course Title and Section -->
+                            <div class="item1Course">
+                                <h1>
+                                    <span class="course-info" id="toggle-details-{{ position.courseSection.courseSection }}" style="cursor: pointer;">
+                                        {{ position.courseSection.course.courseTitle }}
+                                    </span>
+                                    <small class="press-details-text" style="color: grey; font-size: 0.8rem;">(Hover for Details)</small>
+                                </h1>
+                                <p>Course Section: <span class="course-info">{{ position.courseSection.courseSection }}</span></p>
+                                <p>Instructor Username: <span class="course-info">{{ position.courseSection.instructor.username }}</span></p>
+                                <p>Term: <span class="course-info">{{ position.courseSection.term }}</span></p>
+                            </div>
+            
+                            <!-- Dropright Details -->
+                            <div class="dropright-menu" id="details-{{ position.courseSection.courseSection }}">
+                                <h3>Available SA Position</h3>
+                                <p>Minimum GPA: <span class="course-info">{{ position.minGPA }}</span></p>
+                                <p>Minimum Grade Required: <span class="course-info">{{ position.minGradeInCourse }}</span></p>
+                                <p>Student Need to Be SA Before: 
+                                    <span class="course-info">{% if position.previousSAExperience %} Yes {% else %} No {% endif %}</span>
+                                </p>
+                                <p>Student Need to Be SA in This Course Before: 
+                                    <span class="course-info">{% if position.previousSAExperienceInCourse %} Yes {% else %} No {% endif %}</span>
+                                </p>
+                                <p>Number of SA for this Position: <span class="course-info">{{ position.numSA }}</span></p>
+                                <p>Date Posted: <span class="course-info">{{ position.date }}</span></p>
+                            </div>
+                        </div>
+            
+                        <!-- Apply Button Section -->
+                        <div class="position-footer">
+                            {% if current_user.check_applyedToPosition(position) == False %}
+                            <div class="item3Course">
+                                <form action="{{ url_for('stud.student_apply', position_id=position.id) }}" method="POST" style="margin-top: 10px;">
+                                    <button class="btn apply-btn" type="submit">
+                                        Apply for Position
+                                    </button>
+                                </form>
+                            </div>
+                            {% else %}
+                            <p style="color: rgb(33, 103, 12); font-size: 20px; text-align: center; font-weight: bold;">You Applied To This Position</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p>No SA positions available at this time.</p>
+                {% endif %}
+        {% endif %}
+        </section>
+    </div>
+
+    <div id="All" class="tabcontent">
+    <section class="positions-section">
+        {% if current_user.check_assignedToPosition() %}
+            <p style="color: rgb(33, 103, 12); font-size: 20px; text-align: center; font-weight: bold;">You have been Assigned to an SA Position!</p>
+            {% set position = current_user.get_assignedPosition().position %}
+            <div class="position-card">
+                <div class="position-main">
+                    <!-- Course Title and Section -->
+                    <div class="item1Course">
+                        <h1>
+                            <span class="course-info">
+                                {{ position.courseSection.course.courseTitle }}
+                            </span>
+                        </h1>
+                        <p>Course Section: <span class="course-info">{{ position.courseSection.courseSection }}</span></p>
+                        <p>Term: <span class="course-info">{{ position.courseSection.term }}</span></p>
+                        <p>Instructor Username: <span class="course-info">{{ position.courseSection.instructor.username }}</span></p>
+                    </div>
+        {% else %}
+            <h2>All Available SA Positions</h2>
+            {% if all_positions %}
+            <div class="position-list">
+                {% for position in all_positions %}
+                <div class="position-card">
+                    <div class="position-main">
+                        <!-- Course Title and Section -->
+                        <div class="item1Course">
+                            <h1>
+                                <span class="course-info" id="toggle-details-{{ position.courseSection.courseSection }}" style="cursor: pointer;">
+                                    {{ position.courseSection.course.courseTitle }}
+                                </span>
+                                <small class="press-details-text" style="color: grey; font-size: 0.8rem;">(Hover for Details)</small>
+                            </h1>
+                            <p>Course Section: <span class="course-info">{{ position.courseSection.courseSection }}</span></p>
+                            <p>Instructor Username: <span class="course-info">{{ position.courseSection.instructor.username }}</span></p>
+                            <p>Term: <span class="course-info">{{ position.courseSection.term }}</span></p>
+                        </div>
+        
+                        <!-- Dropright Details -->
+                        <div class="dropright-menu" id="details-{{ position.courseSection.courseSection }}">
+                            <h3>Available SA Position</h3>
+                            <p>Minimum GPA: <span class="course-info">{{ position.minGPA }}</span></p>
+                            <p>Minimum Grade Required: <span class="course-info">{{ position.minGradeInCourse }}</span></p>
+                            <p>Student Need to Be SA Before: 
+                                <span class="course-info">{% if position.previousSAExperience %} Yes {% else %} No {% endif %}</span>
+                            </p>
+                            <p>Student Need to Be SA in This Course Before: 
+                                <span class="course-info">{% if position.previousSAExperienceInCourse %} Yes {% else %} No {% endif %}</span>
+                            </p>
+                            <p>Number of SA for this Position: <span class="course-info">{{ position.numSA }}</span></p>
+                            <p>Date Posted: <span class="course-info">{{ position.date }}</span></p>
+                        </div>
+                    </div>
+        
+                    <!-- Apply Button Section -->
+                    <div class="position-footer">
+                        {% if current_user.check_applyedToPosition(position) == False %}
+                        <div class="item3Course">
+                            <form action="{{ url_for('stud.student_apply', position_id=position.id) }}" method="POST" style="margin-top: 10px;">
+                                <button class="btn apply-btn" type="submit">
+                                    Apply for Position
+                                </button>
+                            </form>
+                        </div>
+                        {% else %}
+                        <p style="color: rgb(33, 103, 12); font-size: 20px; text-align: center; font-weight: bold;">You Applied To This Position</p>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p>No SA positions available at this time.</p>
+            {% endif %}
+        {% endif %}
+    </section>
+    </div>
+
+
+    <div id="Apps" class="tabcontent">
+        <section class="positions-section">
+            <h2>Your Applications</h2>
+            {% if all_applications %}
+                {% if current_user.check_assignedToPosition()%}
+                    {% set app = current_user.get_assignedPosition()%}
+                    {% include '_appView.html' %}
+                {% else %}
+                    {% for app in all_applications %}
+                        {% include '_appView.html' %}
+                    {% endfor %}
+                {% endif %}
+            {% else %}
+                You have no applications currently. 
+            {% endif %}
+        </section>
+    </div>
+    {% block script %}
+    <script>
+  
+
+
+
+    function openTab(event, tableName){
+        var i, tabcontent, tablinks;
+
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+        }
+
+        tablinks = document.getElementsByClassName("tablinks");
+        for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+
+            document.getElementById(tableName).style.display = "block";
+            event.cur
+            rentTarget.className += " active";
+        }
+
+        //default
+        document.addEventListener("DOMContentLoaded", function () {
+            const defaultTab = document.querySelector(".tablinks[onclick*='Recommended']");
+            if (defaultTab) {
+                defaultTab.click();
+            }
+        });
+    </script>
+    {% endblock %}
+    {% endblock %}
+    

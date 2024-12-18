@@ -1,0 +1,20 @@
+<div class="position-card">
+    <div class="position-main">
+        <p>{{courseTaken.course.courseNum}} - {{courseTaken.course.courseTitle}}  </p>
+
+        <div class = "positionsContainer">
+            <span> Taken in Term: {{courseTaken.term}} </span>
+            <span>
+                SA of Course: 
+                {% if courseTaken.sa_status %}
+                    Yes
+                {% else %}
+                    no
+                {% endif %}
+                &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+            </span>
+        <span>   Grade: {{courseTaken.grade}}  </span>
+         </div>
+        
+    </div>
+</div>

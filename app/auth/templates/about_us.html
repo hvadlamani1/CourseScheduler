@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="about-us-container">
+    <div class="logo-center">
+        <img src="{{ url_for('static', filename='sa-removebg-preview.png') }}" alt="SA Portal Logo" class="logo-img">
+    </div>
+    <h1>Team FunctionJunction</h1>
+    <p>
+        Welcome to our Software Engineering CS Project! 
+    </p>
+    <div class="team-section">
+        <h2>Meet FunctionJunction</h2>
+        <div class="team-grid">
+            <!-- Aditya Patel -->
+            <div class="team-card" onclick="showDetails(this)" 
+            data-name="Aditya Patel" 
+            data-role="CS" 
+            data-bio="Hello, I am Aditya Patel, and this is my bio">
+
+                <img src="{{ url_for('static', filename='Aditya.jpeg') }}" alt=" Member 1">
+            </div>
+            <!-- Hemanth Vadlamani -->
+            <div class="team-card" onclick="showDetails(this)" 
+            data-name="Hemanth Vadlamani" 
+            data-role="CS and DS" 
+            data-bio="Hello, I am Hemanth Vadlamani, an aspiring computer scientist interested in AI and security.">
+
+                <img src="{{ url_for('static', filename='hemu_pic.jpg') }}" alt=" Member 2">
+            </div>
+            <!-- Michael Lin -->
+            <div class="team-card" onclick="showDetails(this)" 
+            data-name="Michael Lin" 
+            data-role="---" 
+            data-bio="Hi Im Michael">
+                <img src="{{ url_for('static', filename='michael.jpg') }}" alt=" Member 3">
+            </div>
+            <!-- Pierce Lindsay -->
+            <div class="team-card" onclick="showDetails(this)" 
+            data-name="Pierce Lindsay" 
+            data-role="CS" 
+            data-bio="Hi Im Pierce. This is our masterpiece of a website. I think I'm done and will be going to sleep now.">
+                <img src="{{ url_for('static', filename='piercePic.png') }}" alt=" Member 4">
+            </div>
+        </div>
+    </div>
+
+    <div class="details-section" id="details-section">
+        <h2 id="details-name" class="details-title">Click a member to learn more</h2>
+        <h4 id="details-role" class="details-role"></h4>
+        <p id="details-bio" class="details-bio"></p>
+    </div>
+</div>
+
+<script>
+    //  display details below the cards
+    function showDetails(card) {
+        const name = card.getAttribute('data-name');
+        const role = card.getAttribute('data-role');
+        const bio = card.getAttribute('data-bio');
+
+        document.getElementById('details-name').textContent = name;
+        document.getElementById('details-role').textContent = role;
+        document.getElementById('details-bio').textContent = bio;
+
+        const detailsSection = document.getElementById('details-section');
+        detailsSection.style.display = 'block'; 
+    }
+</script>
+{% endblock %}

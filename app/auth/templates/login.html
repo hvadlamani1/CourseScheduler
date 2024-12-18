@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="login-container">
+    <div class="logo-center">
+        <img src="{{ url_for('static', filename='sa-removebg-preview.png') }}" alt="SA Portal Logo" class="logo-img">
+    </div>
+    <h1>Sign In</h1>
+
+    <form action="{{ url_for('auth.login') }}" method="POST">
+        {{ form.hidden_tag() }}
+
+        <label for="email">{{ form.email.label }}</label>
+        {{ form.email }}
+
+        <label for="password">{{ form.password.label }}</label>
+        {{ form.password }}
+
+        <div class="remember-me">
+            <label>
+                {{ form.remember_me }}
+                <span>Remember Me</span>
+            </label>
+        </div>
+
+        {{ form.submit(class="button login-button") }}
+    </form>
+
+        <!-- "Login using SSO" button -->
+        <form action="{{ url_for('auth.ssologin') }}" method="GET" style="display:inline;">
+            <button type="submit" class=" sso-button">Login using SSO</button>
+        </form>
+        <br>
+        <br>
+        <!-- Register links -->
+        <div class="register-links">
+            <a href="{{ url_for('auth.register_student') }}">Click to Register new Student</a>
+            <br>
+            <br>
+            <a href="{{ url_for('auth.register_instructor') }}">Click to Register new Instructor</a>
+        </div>
+</div>
+{% endblock %}

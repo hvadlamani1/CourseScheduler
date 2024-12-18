@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Microsoft Identity Python Web App: Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">  <!-- Link to your main.css file -->
+</head>
+<body>
+
+    <div class="ssologin-content">
+        <!-- Confirmation Card -->
+        <div class="ssologin-container">
+            <h1>Sign In Confirmation</h1>
+            <p>Are you sure you want to sign in with your Microsoft account?</p>
+            
+            <div class="ssologin-button-group">
+                <!-- Sign In Button -->
+                <a href="{{ auth_uri | replace('{', '') | replace('}', '') | replace("'", "") | replace("auth_uri:", "") }}" 
+                   class="ssologin-sso-button" target="_blank">
+                   Yes, Sign Me In
+                </a>
+
+                <!-- Cancel Button -->
+                <a href="{{ url_for('auth.login') }}" class="ssologin-cancel-button">No, Cancel</a>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        Microsoft identity platform Web App Sample
+    </footer>
+
+</body>
+</html>

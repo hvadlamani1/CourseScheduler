@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="register-container">
+    <h1>Create an SA Position</h1>
+
+    <!-- TODO: (milestone 3) Include the template for "user registration" form here..  -->
+    <form action="{{url_for('inst.create_sa_position')}}" method = "POST">
+        {{form.hidden_tag()}}
+
+
+        <div class="form-group">
+            {{ form.courseSection.label }}
+            {{ form.courseSection(class="form-select") }}
+        </div>
+
+             {{ form.mingpa.label }}</label>
+            {{ form.mingpa}}
+            {% for error in form.mingpa.errors %}
+            <div class="error">[{{ error }}]</div>
+            {% endfor %}
+
+        <p>
+            {{ form.mingrade.label }}<br>
+            {{ form.mingrade(class='form-text') }}<br>
+            {% for error in form.mingrade.errors %}
+                <span style="color: red">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+
+        <div class="remember-me">
+            <label>
+                {{ form.previousSAEXP }}
+                <span> {{form.previousSAEXP.label}}</span>
+            </label>
+        </div>
+
+        <div class="remember-me">
+            <label>
+                {{ form. previousSAEXPInThisClass }}
+                <span>{{ form. previousSAEXPInThisClass.label}}</span>
+            </label>
+        </div>
+
+
+        <p>
+            {{ form.numSA.label }}<br>
+            {{ form.numSA(class='form-text') }}<br>
+            {% for error in form.numSA.errors %}
+                <span style="color: red">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+
+        <p>{{ form.submit(class="button login-button") }}</p>
+            </form>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="register-container">
+    <h1>Create a Course Section</h1>
+
+    <!-- TODO: (milestone 3) Include the template for "user registration" form here..  -->
+    <form action="{{url_for('inst.create_course_section')}}" method = "POST">
+        {{form.hidden_tag()}}
+
+        <p>
+            {{ form.courseName.label }}
+            {{ form.courseName(class="form-select") }}
+        </p>
+
+        {{ form.courseTerm.label }}</label>
+        {{ form.courseTerm }}
+        {% for error in form.courseTerm.errors %}
+        <div class="error">[{{ error }}]</div>
+        {% endfor %}
+
+        <p>
+            {{ form.courseSection.label }}<br>
+            {{ form.courseSection(class='form-text') }}<br>
+            {% for error in form.courseSection.errors %}
+                <span style="color: red">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+
+        <p>{{ form.submit(class="button login-button") }}</p>
+        </form> 
+    </form>
+</div>
+{% endblock %}

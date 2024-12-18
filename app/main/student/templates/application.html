@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+{% block content %}
+
+{% set gpaStatus = "item8fail" %}
+{% if current_user.check_studMeetsGPA(position) %}
+    {% set gpaStatus = "item8check" %}
+{% endif %}
+
+{% set gradeStatus = "item13fail" %}
+{% if current_user.check_studMeetsCourseGrade(position) %}
+    {% set gradeStatus = "item13check" %}
+{% endif %}
+
+{% set expStatus = "item18fail" %}
+{% if current_user.check_studMeetsSAExperience(position) %}
+    {% set expStatus = "item18check" %}
+{% endif %}
+
+{% set expClassStatus = "item23fail" %}
+{% if current_user.check_studMeetsCourseSAExperience(position) %}
+    {% set expClassStatus = "item23check" %}
+{% endif %}
+
+
+<div class="grid-container">
+    <div class="item1">
+        <span> Your Qualifications</span>
+    </div>
+
+    <div class="item2">
+        <span> </span>
+    </div>
+    <div class="item3">
+        <span>  <b> {{position.courseSection.course.courseTitle}} <br>
+             {{position.courseSection.course.courseNum}} <br>
+             {{position.courseSection.term}} - {{position.courseSection.courseSection}}</b></span>
+    </div>
+    <div class="item4">
+       <span></span> 
+    </div>
+
+    <div class="item5">
+        <span> Required Qualifications</span>
+    </div>
+    <div class="item6">
+        <span>{{current_user.GPA}}</span>
+    </div>
+    <div class="item7">
+       <span></span> 
+    </div>
+        <div class= {{gpaStatus}}>
+            <span> GPA </span>
+        </div>
+    <div class="item9">
+        <span></span> 
+    </div>
+    <div class="item10">
+       <span> {{position.minGPA}}</span>
+    </div>
+    <div class="item11">
+        <span>{{current_user.get_gradeInCourse(position.courseSection.course)}}</span> 
+    </div> 
+  
+    <div class="item12">
+        <span></span> 
+    </div> 
+    <div class={{gradeStatus}}>
+        <span>Grade Achieved</span> 
+    </div> 
+    <div class="item14">
+        <span></span> 
+    </div> 
+    <div class="item15">
+        <span>{{position.minGradeInCourse}}</span> 
+    </div> 
+    <div class="item16">
+        {% if current_user.check_studentSABefore() %}
+            <span>Yes</span> 
+        {% else %}
+            <span>No</span> 
+        {% endif %}
+    </div> 
+    <div class="item17">
+        <span></span> 
+    </div> 
+    <div class={{expStatus}}>
+        <span>SA Experience</span> 
+    </div> 
+    <div class="item19">
+        <span></span> 
+    </div> 
+    <div class="item20">
+        {% if position.previousSAExperience %}
+            <span>Yes</span> 
+        {% else %}
+            <span>No</span> 
+        {% endif %}
+    </div> 
+    <div class="item21">
+        {% if current_user.check_studentSACourse(position.courseSection.course) %}
+            <span>Yes</span> 
+        {% else %}
+            <span>No</span> 
+        {% endif %}
+    </div> 
+    <div class="item22">
+        <span></span> 
+    </div> 
+    <div class={{expClassStatus}}>
+        <span>SA this Class Before</span> 
+    </div> 
+    <div class="item24">
+        <span></span> 
+    </div> 
+    <div class="item25">
+        {% if position.previousSAExperienceInCourse %}
+            <span>Yes</span> 
+        {% else %}
+            <span>No</span> 
+        {% endif %}
+    </div>
+</div> 
+
+<div class="positionsContainer">
+    <h5><span class="body"><b>Available Positions Left: {{position.howManyAvailableSlots()}} </b></span> </h5>
+    <form action="{{url_for('stud.edit_profile', course_applying = position.id)}}" method="POST, GET">
+        {{eform.hidden_tag()}}
+        {{ eform.submit(class="buttonRight") }}
+    </form>
+  </div>
+
+
+
+
+
+<form action="" method="POST">
+    {{ form.hidden_tag() }}
+    {{ form.submit(class="button login-button") }}
+</form>
+
+{% endblock %}

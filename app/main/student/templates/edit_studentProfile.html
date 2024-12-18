@@ -1,0 +1,312 @@
+{%extends "base.html" %}
+{%block content%}
+
+<div class="register-container">
+<h1>Edit Student Profile</h1>
+
+<form action="" method="POST">
+    {{form.hidden_tag()}}
+
+    <p>
+        {{form.firstname.label}}<br>
+        {{form.firstname(class='input') }}<br>
+        {% for error in form.firstname.errors%}
+        <span style = "color:red">[{{error}}]</span>
+        {% endfor %}
+    </p>
+
+    <p>
+        {{form.lastname.label}}<br>
+        {{form.lastname(class='input') }}<br>
+        {% for error in form.lastname.errors%}
+        <span style = "color:red">[{{error}}]</span>
+        {% endfor %}
+    </p>
+
+    <p>
+        {{form.wpiEmail.label}}<br>
+        {{form.wpiEmail(class='input') }}<br>
+        {% for error in form.wpiEmail.errors%}
+        <span style = "color:red">[{{error}}]</span>
+        {% endfor %}
+    </p>
+
+    <p>
+        {{form.phoneNum.label}}<br>
+        {{form.phoneNum(class='input') }}<br>
+        {% for error in form.phoneNum.errors%}
+        <span style = "color:red">[{{error}}]</span>
+        {% endfor %}
+    </p>
+
+    <p>
+        {{form.GPA.label}}<br>
+        {{form.GPA(class='input') }}<br>
+        {% for error in form.GPA.errors%}
+        <span style = "color:red">[{{error}}]</span>
+        {% endfor %}
+    </p>
+
+    <p>
+        {{form.major1.label}}<br>
+        {{form.major1(class='input') }}<br>
+        {% for error in form.major1.errors%}
+        <span style = "color:red">[{{error}}]</span>
+        {% endfor %}
+    </p>
+
+    <p>
+        {{form.major2.label}}<br>
+        {{form.major2(class='input') }}<br>
+        {% for error in form.major2.errors%}
+        <span style = "color:red">[{{error}}]</span>
+        {% endfor %}
+    </p>
+
+    
+    <p>
+        <a class="btn modal-trigger waves-effect waves-light" href="#edit-courses-modal">
+            Edit Existing Courses
+            <i class="material-icons right">edit</i>
+        </a>
+        
+    </p>
+    <p>
+        <a class="btn modal-trigger waves-effect waves-light" href="#add-courses-modal">
+            Add New Courses Taken
+            <i class="material-icons right">add</i>
+        </a>
+
+        
+    </p>
+
+    <br>
+
+    <p>
+        {{form.password.label}}<br>
+        {{form.password(class='input') }}<br>
+        {% for error in form.password.errors%}
+        <span style = "color:red">[{{error}}]</span>
+        {% endfor %}
+    </p>
+
+    <p>
+        {{form.password2.label}}<br>
+        {{form.password2(class='input') }}<br>
+        {% for error in form.password2.errors%}
+        <span style = "color:red">[{{error}}]</span>
+        {% endfor %}
+    </p>
+
+    <p>{{form.submit(class='button')}}</p>
+
+</div>
+
+<div id="edit-courses-modal" class="modal edit-form" style="max-height: 500px; overflow-y: auto;">
+    <div class="modal-content">
+        <h4 class="center-align">Edit Courses Taken</h4>
+
+        <div id="courses-list">
+            {% for course in student_courses %}
+            <div class="card-panel grey lighten-4 course-item" id="course-item-{{ course.id }}">
+                <div class="row">
+                    <!-- Course Name -->
+                    <div class="col s12 m6">
+                        <label>
+                            <span>{{ course.courseNum }} - {{ course.courseTitle }}</span>
+                        </label>
+                    </div>
+
+                    <!-- SA'd this course? Checkbox -->
+                    <div class="col s12 m6">
+                        <label>
+                            <input type="checkbox" name="sa_status_{{ loop.index }}" id="sa_status_{{ loop.index }}" 
+                                {% if course.sa_status %}checked{% endif %}>
+                            <span>SA'd this course?</span>
+                        </label>
+                    </div>
+
+                    <!-- Grade Dropdown -->
+                    <div class="col s12 m6">
+                        <label for="grade_{{ loop.index }}">Grade Received</label>
+                        <select name="grade_{{ loop.index }}" id="grade_{{ loop.index }}" class="browser-default">
+                            <option value="N/A" {% if course.grade == "N/A" %}selected{% endif %}>N/A</option>
+                            <option value="A" {% if course.grade == "A" %}selected{% endif %}>A</option>
+                            <option value="B" {% if course.grade == "B" %}selected{% endif %}>B</option>
+                            <option value="C" {% if course.grade == "C" %}selected{% endif %}>C</option>
+                            <option value="D" {% if course.grade == "D" %}selected{% endif %}>D</option>
+                        </select>
+                    </div>
+
+                    <!-- Term -->
+                    <div class="col s12 m6">
+                        <label for="term_{{ loop.index }}">Term</label>
+                        <input type="text" name="term_{{ loop.index }}" id="term_{{ loop.index }}" 
+                            value="{{ course.term }}" placeholder="e.g., Fall 2024">
+                    </div>
+                </div>
+                <!-- Delete Course Button -->
+                <div class="right-align">
+                    <button type="button" name="delete_course_{{loop.index}}" id="delete_course_{{loop.index}}" class="btn red lighten-1" data-course-id="{{ course.id }}" onclick="deleteCourse('{{ course.id }}')">Delete</button>
+                </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="modal-footer">
+        <a href="#" class="modal-close waves-effect waves-green btn-flat">Done</a>
+    </div>
+</div>
+
+<div id="add-courses-modal" class="modal edit-form" style="max-height: 500px; overflow-y: auto;">
+        <div class="modal-content">
+            <h4 class="center-align">Courses Taken</h4>
+
+                    <!-- Search Bar -->
+                    <div class="input-field">
+                        <input id="course-search" type="text" class="validate" placeholder="Search courses...">
+                        <label for="course-search">Search Courses</label>
+                    </div>
+            <div id="courses-list">
+                {% for course in courses_left %}
+                <div class="card-panel grey lighten-4 course-item">
+                    <div class="row">
+                        <!-- Course Name -->
+                        <div class="col s12 m4">
+                            <label>
+                                <span>{{ course.courseNum }} - {{course.courseTitle}}</span>
+                            </label>
+                        </div>
+
+                        <!-- SA'd this course? Checkbox -->
+                        <div class="col s12 m4">
+                            <label>
+                                <input type="checkbox" name="sa_status_add{{ loop.index }}" id="sa_status_add{{ loop.index }}">
+                                <span>SA'd this course?</span>
+                            </label>
+                        </div>
+
+                        <!-- Grade Received Dropdown -->
+                        <div class="col s12 m4">
+                            <label for="grade_add{{ loop.index }}">Grade Received</label>
+                            <select name="grade_add{{ loop.index }}" id="grade_add{{ loop.index }}" class="browser-default">
+                                <option value="N/A" selected>N/A</option>
+                                <option value="A">A</option>
+                                <option value="B">B</option>
+                                <option value="C">C</option>
+                                <option value="D">D</option>
+                            </select>
+                        </div>
+                        <div class="col s12 m4">
+                            <label>
+                                <input type="text" name="term_add{{ loop.index }}" id="term_add{{ loop.index }}">
+                                <span>Term</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="modal-footer">
+            <a href="#" class="modal-close waves-effect waves-green btn-flat">Done</a>
+        </div>
+    </div>
+
+</form>
+{% block script %}
+<script>
+    function deleteCourse(courseId) {
+    // Send a POST request to delete the course
+    fetch(`/delete/course/${courseId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ courseId: courseId }) 
+    })
+    .then(response => response.json()) 
+    .then(data => {
+        if (data.status === 'success') {
+            const button = document.querySelector(`[data-course-id="${courseId}"]`);
+            if (button) {
+                button.textContent = 'Deleted';
+                button.style.setProperty('background-color', 'gray', 'important'); 
+                button.style.pointerEvents = 'none'; 
+            }
+        } else {
+            console.error(data.message);
+            alert(`Failed to delete the course: ${data.message}`);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An unexpected error occurred. Please try again.');
+    });
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    // Function to populate individual course fields with existing data
+    async function populateCourse(courseId, index) {
+        try {
+            const studentId = "{{ current_user.id }}"; // Assuming student ID is available in a hidden input
+            const response = await fetch(`/student/courseinfo/${studentId}/${courseId}`);
+            if (response.ok) {
+                console.log("Response is ok")
+                const courseInfo = await response.json();
+
+                // Autofill SA checkbox
+                const saCheckbox = document.getElementById(`sa_status_${index}`);
+                if (saCheckbox) {
+                    saCheckbox.checked = courseInfo.sa_status || false;
+                }
+
+                // Autofill grade dropdown
+                const gradeDropdown = document.getElementById(`grade_${index}`);
+                if (gradeDropdown) {
+                    gradeDropdown.value = courseInfo.grade || "N/A";
+                }
+
+                // Autofill term input
+                const termInput = document.getElementById(`term_${index}`);
+                if (termInput) {
+                    termInput.value = courseInfo.term || "";
+                }
+            } else {
+                console.error(`Failed to fetch course info for course ID ${courseId}:`, response.statusText);
+            }
+        } catch (error) {
+            console.error(`Error fetching course info for course ID ${courseId}:`, error);
+        }
+    }
+
+    // Fetch and populate all courses when the modal is opened
+    async function populateAllCourses() {
+        const courseCards = document.querySelectorAll(".course-item");
+        courseCards.forEach((card, index) => {
+            const courseId = card.getAttribute("data-course-id");
+            if (courseId) {
+                populateCourse(courseId, index + 1);
+            }
+        });
+    }
+
+    // Open modal and trigger auto-fill
+    const editCoursesModal = document.getElementById("edit-courses-modal");
+
+    if (editCoursesModal) {
+        const editButton = document.querySelector(".modal-trigger");
+        editButton.addEventListener("click", () => {
+            populateAllCourses();
+        });
+    }
+});
+
+
+
+</script>
+
+
+{% endblock %}
+{%endblock%}
+</div>

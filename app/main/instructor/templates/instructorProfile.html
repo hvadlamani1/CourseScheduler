@@ -1,0 +1,20 @@
+{%extends "base.html" %}
+{%block content%}
+<div class="register-container"style="text-align: center;">
+<h1>Instructor profile</h1>
+{%if current_user.wpiID == instructor.wpiID%}
+<h5> Hi {{instructor.firstname}}  {{instructor.lastname}}</h5>
+{%else%}
+<h5>{{instructor.firstname}}  {{instructor.lastname}}</h5>
+{%endif%}
+
+<p>WPI email: {{instructor.username}}</p>
+<p>Phone number: {{instructor.phoneNumber}}</p>
+<p>WPI ID: {{instructor.wpiID}}</p>
+
+{%if current_user.wpiID == instructor.wpiID%}
+<p><a href="{{url_for('inst.edit_profile')}}" class = 'button'>Edit your profile</a></p>
+{%endif%}
+</div>
+
+{%endblock%}

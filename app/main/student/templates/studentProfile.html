@@ -1,0 +1,39 @@
+{%extends "base.html" %}
+{%block content%}
+<div class="student-container">
+<h1>{{student.username}}'s profile</h1>
+
+    <p> Name: {{student.firstname}}  {{student.lastname}}</p>
+    <p>Phone number: {{student.phoneNumber}}</p>
+    <p>WPI ID: {{student.wpiID}}</p>
+    <p>GPA: {{student.GPA}}</p>
+    <p> Major: {{student.major1}} {{student.major2}}</p>
+
+
+<section class="positions-section">
+    <h5> <b>Courses Taken</h5></b> <br>
+    {% if student.get_hasCoursesTaken() %}
+        {% for courseTaken in student.get_coursesTaken()  %}
+            {% include '_courseView.html' %}
+        {% endfor %}
+    {% else %}
+        <p> No courses have been taken.</p>
+    {% endif %}
+</section>
+
+{% if student.check_assignedToPosition() %}
+    {% set pos = student.get_assignedPosition().position %}
+    <p style="color: rgb(33, 103, 12); font-size: 20px; text-align: center; font-weight: bold;"> 
+        Assigned to {{pos.courseSection.course.courseNum}}  {{pos.courseSection.term}}-{{pos.courseSection.courseSection}} with {{pos.courseSection.instructor.username}}!</p>
+{% else %}
+    <p style="color: rgb(0, 0, 0); font-size: 20px; text-align: center; font-weight: bold;">Not Currently Assigned to an SA position</p>
+{%endif%}
+<br>
+
+
+{%if current_user.wpiID == student.wpiID%}
+    <p><a href="{{url_for('stud.edit_profile', course_applying = -1)}}" class = 'button' >Edit your profile</a></p>
+{%endif%}
+</div>
+
+{%endblock%}

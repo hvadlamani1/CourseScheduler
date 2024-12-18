@@ -1,0 +1,70 @@
+<div id = position-{{app.position.id}} class="position-card">
+    <div class="position-main">
+        <h5>
+            <span class="course-info">
+                {{app.get_course().courseNum}} - {{app.get_course().courseTitle}}
+            </span>
+        </h5>
+        Course Section: <span class="course-info">{{ app.position.courseSection.courseSection }}</span> <br>
+        Term: <span class="course-info">{{ app.position.courseSection.term }}</span><br>
+        Instructor Username: <span class="course-info">{{app.get_instructor().username}}</span> <br>
+        <p>Application Status: <span id = "statusHeader" class="course-info"> {{app.status}} </span></p>
+
+
+    </div>
+
+    <!-- Withdraw button-->
+    <div class="position-footer">
+        <div class="item3Course">
+            {% if app.status == "withdrawn" %}
+                <button id = "buttonW" class="btn apply-btn" onclick="reapply({{app.position.id}})">
+                    Reapply
+                </button>
+            {% elif app.status == "assigned" %}
+            <p style="color: rgb(33, 103, 12); font-size: 20px; text-align: center; font-weight: bold;"> You have been assigned to this position, Congrats!</p>
+            {% elif app.status == "rejected" %}
+            <p style="color: red; font-size: 20px; text-align: center; font-weight: bold;"> You have been rejected from this position</p>
+            {% else %}
+                <button id = "buttonP" class="btn apply-btn" onclick="withdraw_post({{app.position.id}})">
+                    Withdraw
+                </button>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{%block script %}
+    <script>
+        async function withdraw_post(position_id) {
+            const url = "{{url_for('stud.student_withdraw', position_id = 'position_id')}}".replace("position_id", position_id);
+            try {
+                const response = await fetch(url);
+                if(!response.ok){
+                    throw new Error(`Response status: ${response.status}`);
+                }
+                const json = await response.json();
+                console.log(json);
+            update_withdraw(position_id, json);
+            } catch(error) {
+                console.error(error.messege)
+            }
+        }
+
+
+        function update_withdraw(position_id, data) {
+            let parent_div = document.getElementById(`position-${position_id}`)
+            let myStatus= parent_div.querySelector("#statusHeader")
+            myStatus.textContent = `${data['status']}`
+            let button = parent_div.querySelector("#buttonP")
+            button.setAttribute("onclick", `reapply(${position_id})`);
+            button.textContent = "Reapply";
+        }
+
+
+        async function reapply(position_id) {
+            const url = "{{url_for('stud.student_apply', position_id = 'position_id')}}".replace("position_id", position_id);
+            window.location.href = url
+        }
+
+    </script>
+{% endblock %}

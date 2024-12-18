@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 style="text-align: center;">Instructor Dashboard</h1>
+    <div class="course-list">
+        {% if courses %}
+            {% for course in courses %}
+                <div class="course-card">
+                {% include 'display_course.html' %}
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No courses to display.</p>
+        {% endif %}
+    </div>
+{% endblock %}
